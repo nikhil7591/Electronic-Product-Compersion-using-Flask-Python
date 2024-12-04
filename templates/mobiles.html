@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Analysis Mobiles</title>
+  <link rel="stylesheet" href="/static/css/category.css">
+
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const productDropdowns = document.querySelectorAll('.product-dropdown');
+
+      // Populate product dropdowns
+      const productNames = {{ product_names | tojson }};
+      productDropdowns.forEach(dropdown => {
+        productNames.forEach(name => {
+          const option = document.createElement('option');
+          option.value = name;
+          option.textContent = name;
+          dropdown.appendChild(option);
+        });
+      });
+
+      async function generateGraphs() {
+        const selectedProducts = Array.from(productDropdowns).map(dropdown => dropdown.value).filter(Boolean);
+
+        if (selectedProducts.length !== 4) {
+          document.getElementById('message').textContent = "Please select 4 products.";
+          return;
+        }
+
+        try {
+          const response = await fetch('/generate-graphs4', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ products: selectedProducts })
+          });
+
+          const data = await response.json();
+          const messageElement = document.getElementById('message');
+          messageElement.innerHTML = "";
+
+          if (response.ok) {
+            const successMessage = document.createElement('p');
+            successMessage.textContent = data.message;
+            messageElement.appendChild(successMessage);
+
+            data.graph_paths.forEach(graphPath => {
+              const iframe = document.createElement('iframe');
+              iframe.src = `/${graphPath}`;
+              iframe.style = "width: 100%; height: 500px; border: none; margin: 10px 0;";
+              messageElement.appendChild(iframe);
+            });
+          } else {
+            const errorMessage = document.createElement('p');
+            errorMessage.textContent = data.message;
+            messageElement.appendChild(errorMessage);
+          }
+        } catch (error) {
+          console.error('Error:', error);
+        }
+      }
+
+      document.getElementById('generateButton').addEventListener('click', generateGraphs);
+    });
+  </script>
+</head>
+<body>
+  <a href="/">Back to Home</a>
+  <div class="container">
+    <h1>Product Analysis</h1>
+    <p>Select 4 Mobiles to dynamically generate interactive graphs for various attributes:</p>
+
+    <div class="dropdown-container">
+      <select id="dropdown1" class="product-dropdown">
+        <option value="">-- Select a Product --</option>
+      </select>
+      <select id="dropdown2" class="product-dropdown">
+        <option value="">-- Select a Product --</option>
+      </select>
+      <select id="dropdown3" class="product-dropdown">
+        <option value="">-- Select a Product --</option>
+      </select>
+      <select id="dropdown4" class="product-dropdown">
+        <option value="">-- Select a Product --</option>
+      </select>
+    </div>
+
+    <button id="generateButton">Generate Interactive Graphs</button>
+    <div id="message"></div>
+  </div>
+</body>
+</html>

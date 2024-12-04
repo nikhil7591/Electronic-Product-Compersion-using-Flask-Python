@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Analysis</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/css/bootstrap.min.css">
+    <style>
+        /* General body styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Side Navbar Styles */
+        .sidenav {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            right: -25;
+            background-color: #111;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+        }
+
+        .sidenav a {
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 20px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .sidenav a:hover {
+            color: #f1f1f1;
+        }
+
+        .sidenav .closebtn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+        }
+
+        /* Main container styling */
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 1.1em;
+            color: #34495e;
+        }
+
+        /* Input and select fields */
+        select, input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        /* Button Styling */
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #3498db;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include 'navbar.html' %}
+    <div class="container">
+        <h2>Data Analysis</h2>
+        <form method="POST" action="/visualize">
+            <div class="form-group">
+                <label for="file">Select CSV File:</label>
+                <select name="file" id="file" class="form-control">
+                    {% for file in csv_files %}
+                    <option value="{{ file }}">{{ file }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="graph_type">Select Graph Type:</label>
+                <select name="graph_type" id="graph_type" class="form-control">
+                    <option value="bar">Bar</option>
+                    <option value="line">Line</option>
+                    <option value="pie">Pie</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="x_axis">X-Axis:</label>
+                <input type="text" name="x_axis" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="y_axis">Y-Axis:</label>
+                <input type="text" name="y_axis" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Generate Graph</button>
+        </form>
+    </div>
+
+</body>
+</html>

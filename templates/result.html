@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Comparison Results</title>
+    <style>
+        /* General Page Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f6f9;
+            color: #2c3e50;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 2.5em;
+            color: #34495e;
+            margin-bottom: 30px;
+        }
+
+        /* Back Link */
+        a {
+            margin-top: 45px;
+            font-size: 18px;
+            color: #fff;
+            text-decoration: none;
+            background-color: #2980b9;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            display: inline-block;
+            margin-left: 30px;
+        }
+
+        a:hover {
+            background-color: #3498db;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        table th,
+        table td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ddd;
+            font-size: 1.1em;
+        }
+
+        table th {
+            background-color: #34495e;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        table tr:hover {
+            background-color: #ecf0f1;
+        }
+
+        table td {
+            color: #34495e;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .chart-container iframe {
+            width: 90%;
+            height: 500px;
+            border: none;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        /* Message when no products are found */
+        .message {
+            text-align: center;
+            font-size: 1.2em;
+            color: #e74c3c;
+            margin: 30px;
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 1024px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            table th,
+            table td {
+                font-size: 1em;
+                padding: 10px;
+            }
+
+            .chart-container iframe {
+                height: 400px;
+            }
+
+            a {
+                font-size: 16px;
+                padding: 8px 15px;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+                margin-top: 20px;
+            }
+
+            table th,
+            table td {
+                font-size: 0.9em;
+                padding: 8px;
+            }
+
+            .chart-container iframe {
+                height: 350px;
+            }
+
+            a {
+                font-size: 14px;
+                padding: 8px 12px;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            h1 {
+                font-size: 1.6em;
+                margin-top: 20px;
+            }
+
+            table th,
+            table td {
+                font-size: 0.85em;
+                padding: 6px;
+            }
+
+            .chart-container iframe {
+                height: 300px;
+            }
+
+            a {
+                font-size: 14px;
+                padding: 6px 10px;
+            }
+
+            /* Stack product details and reduce margin on smaller screens */
+            .container {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <a href="/budget_searching">Back to Budget Searching</a>
+    <div class="container">
+        <br><br><br>
+        <h1>Top Products Comparison</h1>
+        <!-- Display message if no products found -->
+        {% if message %}
+        <p class="message">{{ message }}</p>
+        {% endif %}
+
+        <!-- Display product details -->
+        {% if products %}
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Brand</th>
+                <th>Selling Price</th>
+                <th>MRP</th>
+                <th>Discount</th>
+                <th>Ratings</th>
+                <th>No_of_ratings</th>
+                <th>Details</th>
+            </tr>
+            {% for product in products %}
+            <tr>
+                <td>{{ product['Name'] }}</td>
+                <td>{{ product['Brand'] }}</td>
+                <td>{{ product['Selling Price'] }}</td>
+                <td>{{ product['MRP'] }}</td>
+                <td>{{ product['Discount'] }}</td>
+                <td>{{ product['Ratings'] }}</td>
+                <td>{{ product['No_of_ratings'] }}</td>
+                <td>{{ product['Details'] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% endif %}
+        <br><br>
+        <!-- Display charts -->
+        {% if chart1 %}
+        <h2 style="text-align:center; font-size: 1.8em; color: #34495e;">Selling Price vs MRP</h2>
+        <div class="chart-container">{{ chart1|safe }}</div>
+        {% endif %}
+        <br>
+        {% if chart2 %}
+        <h2 style="text-align:center; font-size: 1.8em; color: #34495e;">Discount vs Ratings</h2>
+        <div class="chart-container">{{ chart2|safe }}</div>
+        {% endif %}
+    </div>
+</body>
+
+</html>

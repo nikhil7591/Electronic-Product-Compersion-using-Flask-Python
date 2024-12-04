@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Optimistic</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/css/bootstrap.min.css">
+    <style>
+        /* General Reset and Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7fc;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        /* Button Styles */
+        .btn-primary {
+            background-color: #4CAF50;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary:hover {
+            background-color: #00b39b;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary:focus,
+        .btn-primary:active {
+            box-shadow: none;
+        }
+
+
+        /* Side Navbar Styles */
+        .sidenav {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            right: -25;
+            background-color: #111;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+        }
+
+        .sidenav a {
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 20px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .sidenav a:hover {
+            color: #f1f1f1;
+        }
+
+        .sidenav .closebtn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background-image: url('/static/images/pexels-photo-6893955.jpeg');
+            background-size: cover;
+            background-position: center;
+            padding: 60px 0;
+            text-align: center;
+            color: #fff;
+            text-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-section h1 {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .hero-section p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 20px auto;
+            opacity: 0.9;
+        }
+
+        /* Category Selection Section */
+        .category-section {
+            text-align: center;
+            margin-top: 50px;
+            padding: 40px 0;
+            background-color: #fff;
+            box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .category-title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .category-select {
+            width: 60%;
+            padding: 10px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            margin-bottom: 15px;
+        }
+
+        .category-button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .category-button:hover {
+            background-color: #00b39b;
+        }
+
+        /* Section with Text and Image */
+        .section-background {
+            background-color: #ffffff;
+            padding: 40px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: #333;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .section-text {
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+
+        .section-image {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .section-image:hover {
+            transform: scale(1.05);
+        }
+
+        /* Footer Section */
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 30px 0;
+            text-align: center;
+        }
+
+        footer h4 {
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        footer p {
+            font-size: 1rem;
+            opacity: 0.7;
+        }
+
+        /* Media Queries for Responsiveness */
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 2rem;
+            }
+
+            .hero-section p {
+                font-size: 1rem;
+            }
+
+            .category-title {
+                font-size: 1.6rem;
+            }
+
+            .category-select {
+                width: 80%;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .section-text {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    {% include 'navbar.html' %}
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <h1>Discover the Best Tech Products</h1>
+            <p>We offer detailed comparisons, reviews, and the latest tech products for smarter purchasing decisions.</p>
+        </div>
+    </section>
+
+    <!-- Category Selection Section -->
+    <div class="container">
+        <div class="category-section">
+            <h2 class="category-title">Select a Category to Explore</h2>
+            <select id="category-select" class="category-select">
+                <option value="" selected disabled>Select a category</option>
+                <option value="/laptop">Laptops</option>
+                <option value="/headphones">Headphones</option>
+                <option value="/mobiles">Mobiles</option>
+                <option value="/tv">TVs</option>
+                <option value="/smart_watch">Smart Watches</option>
+            </select>
+            <button class="category-button" onclick="navigateToCategory()">Go</button>
+        </div>
+    </div>
+
+    <!-- Section with Text and Image -->
+    <div class="container my-5">
+        <div class="row align-items-center section-background">
+            <div class="col-md-6">
+                <h2 class="section-title">Discover the Best Tech Products</h2>
+                <p class="section-text">
+                    Our platform offers detailed, unbiased reviews of the latest tech products available on Amazon and Flipkart.
+                    Whether you're looking for smartphones, laptops, or other electronics, we've got you covered with expert insights,
+                    user reviews, and comprehensive comparisons. Make informed purchase decisions with ease.
+                </p>
+                <p class="section-text">
+                    We gather data from top e-commerce platforms and user feedback to help you find the best deals on the market,
+                    ensuring you always get value for your money. Start comparing products today and shop smart!
+                </p>
+            </div>
+            <div class="col-md-6 text-center">
+                <img src="/static/images/macbook-pro-laptop-macbook-air-apple-macbook-pro-removebg.png" alt="Tech Review" class="section-image">
+            </div>
+        </div>
+    </div>
+    
+    <div class="container my-5">
+        <div class="row align-items-center section-background">
+            <!-- Image Section -->
+            <div class="col-md-6 text-center">
+                <img src="/static/images/pexels-sound-on-3761299-removebg-preview.png" alt="Product Comparison"
+                    class="section-image">
+            </div>
+
+            <!-- Text Section -->
+            <div class="col-md-6">
+                <h2 class="mb-3 section-title">Effortless Product Comparison</h2>
+                <p class="section-text">
+                    Unveil the power of effortless product comparison with our platform. Simply search for any product
+                    on Amazon, and our
+                    system will showcase a comprehensive comparison of features, specifications, and user reviews. Dive
+                    deep into the
+                    details and make choices that perfectly align with your needs and preferences.
+                </p>
+                <p class="section-text">
+                    Our intuitive interface allows you to easily sift through countless options and make side-by-side
+                    comparisons. Whether
+                    it's finding the best smartphone or the most reliable laptop, our platform ensures you get the most
+                    accurate and
+                    relevant information to make a wise decision. Experience a smarter way to shop today!
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer>
+        <h4>Optipic</h4>
+        <p>Your one-stop platform for the best tech product comparisons.</p>
+    </footer>
+
+    <script>
+        // JavaScript function to navigate based on the selected category
+        function navigateToCategory() {
+            const selectElement = document.getElementById('category-select');
+            const selectedValue = selectElement.value;
+            if (selectedValue) {
+                window.location.href = selectedValue; // Redirect to the selected page
+            } else {
+                alert("Please select a category first!");
+            }
+        }
+    </script>
+
+</body>
+
+</html>

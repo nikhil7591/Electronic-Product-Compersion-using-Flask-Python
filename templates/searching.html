@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Products</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/css/bootstrap.min.css">
+    <style>
+        /* Custom CSS */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        /* Side Navbar Styles */
+        .sidenav {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            right: -25;
+            background-color: #111;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+        }
+
+        .sidenav a {
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 20px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .sidenav a:hover {
+            color: #f1f1f1;
+        }
+
+        .sidenav .closebtn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+        }
+
+    
+        /* Container styling */
+        .container {
+            max-width: 900px;
+            margin: 80px auto;
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e0e0;
+        }
+    
+        /* Header styling */
+        h1,
+        h2 {
+            font-size: 1.8rem;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+    
+        h1 {
+            font-size: 2.2rem;
+            color: #007bff;
+        }
+    
+        h2 {
+            font-size: 1.6rem;
+            color: #555;
+        }
+    
+        /* Input and button styling */
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            font-size: 1rem;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+    
+        input[type="text"]:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+            outline: none;
+        }
+    
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            padding: 12px 20px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+    
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+            transform: scale(1.05);
+        }
+    
+        /* Loading spinner */
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            margin-top: 30px;
+        }
+    
+        /* Result container styling */
+        .result-container {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    
+        /* Table styling */
+        .table {
+            width: 100%;
+            margin-top: 20px;
+            font-size: 1rem;
+            color: #333;
+        }
+    
+        .table th,
+        .table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+    
+        .table th {
+            background-color: #f1f1f1;
+            font-weight: 600;
+        }
+    
+        .table tbody tr:hover {
+            background-color: #f7f7f7;
+        }
+    
+        
+    
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                width: 100%;
+                padding: 20px;
+            }
+    
+            h1, h2 {
+                text-align: center;
+            }
+    
+            .table th,
+            .table td {
+                padding: 8px;
+            }
+    
+            .btn-primary {
+                width: 100%;
+                padding: 15px;
+            }
+        }
+    </style>
+    
+    
+</head>
+
+<body>
+
+    <!-- Navbar (will remain visible) -->
+    {% include 'navbar.html' %}
+
+    <div class="container">
+        <h1>Hello, User</h1>
+        <h2>How can I help you today?</h2>
+
+        <input type="text" class="form-control" placeholder="Enter a tech product name here" id="promptInput">
+        <button id="submitButton" class="btn btn-primary mt-3">Submit</button>
+
+        <!-- Loading spinner -->
+        <div class="loading-spinner" id="loadingSpinner">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+
+        <div class="result-container" id="resultContainer">
+            <h3>Product Review</h3>
+            <div id="resultText"></div>
+        </div>
+    </div>
+
+    <script>
+        // Get all the necessary DOM elements
+        const promptInput = document.getElementById('promptInput');
+        const submitButton = document.getElementById('submitButton');
+        const resultContainer = document.getElementById('resultContainer');
+        const resultText = document.getElementById('resultText');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const heading1 = document.querySelector('h1');
+        const heading2 = document.querySelector('h2');
+        const navbar = document.querySelector('nav');
+
+        // Function to submit when pressing Enter key
+        promptInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                submitButton.click(); // Trigger the submit button's click event
+            }
+        });
+
+        // Submit button event listener
+        submitButton.addEventListener('click', () => {
+            const promptText = promptInput.value;
+
+            // Check if the input is not empty
+            if (promptText.trim() === '') {
+                alert('Please enter a tech product name.');
+                return;
+            }
+
+            // Show the loading spinner and keep navbar and headings visible
+            loadingSpinner.style.display = 'block';
+
+            // Send the prompt to the Gemini AI API
+            const apiKey = 'AIzaSyCKejhvIA1FOUcEkteHH5BNyX8fu7dndWs'; // Replace with your actual API key
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
+
+            const requestBody = {
+                contents: [
+                    {
+                        parts: [
+                            { text: `Provide a review for the following tech product: ${promptText}. Include company name, features (display, processor, ram, rom, battery life, ports, graphics), reviews, ratings, price, and eCommerce links (Amazon, Flipkart, etc.).` }
+                        ]
+                    }
+                ]
+            };
+
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestBody)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Hide the loading spinner
+                    loadingSpinner.style.display = 'none';
+
+                    if (data.candidates && data.candidates[0].content && data.candidates[0].content.parts) {
+                        const result = data.candidates[0].content.parts[0].text;
+
+                        // Format the response with a table
+                        const formattedResult = formatReview(result);
+                        resultText.innerHTML = formattedResult;
+                    } else {
+                        resultText.textContent = 'No valid content received.';
+                    }
+                    resultContainer.style.display = 'block';
+
+                    // Clear the input field after submission so the user can input again
+                    promptInput.value = '';
+                })
+                .catch(error => {
+                    // Hide the loading spinner in case of error
+                    loadingSpinner.style.display = 'none';
+
+                    console.error('Error sending prompt:', error);
+                    resultText.textContent = 'Error fetching product review. Please try again.';
+                    resultContainer.style.display = 'block';
+                });
+        });
+
+        // Function to format the result into a table
+        function formatReview(review) {
+            // Initialize an empty table
+            let table = `<table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Attribute</th>
+                                    <th>Details</th>
+                                </tr>
+                            </thead>
+                            <tbody>`;
+
+            // Extracting parts from the review text and adding them to the table
+            review = review.replace(/##\s*/g, '').replace(/\*\*\s*/g, ''); // Clean up unwanted symbols
+
+            // Match each section of the review (Company Name, Features, Reviews, etc.)
+            const sections = [
+                { label: 'Company Name', regex: /Company Name:(.*?)Price:/s },
+                { label: 'Price', regex: /Price:(.*?)Details:/s },
+                { label: 'Details', regex: /Details:(.*?)Subfeatures:/s },
+                { label: 'Subfeatures', regex: /Subfeatures:(.*?)Reviews:/s },
+                { label: 'Reviews', regex: /Reviews:(.*?)Ratings:/s },
+                { label: 'Ratings', regex: /Ratings:(.*)/s }
+            ];
+
+            sections.forEach(section => {
+                const match = review.match(section.regex);
+                if (match) {
+                    table += `<tr>
+                                <td><strong>${section.label}</strong></td>
+                                <td>${match[1].trim()}</td>
+                              </tr>`;
+                }
+            });
+
+            // Extract Subfeatures (Display, Processor, RAM, ROM, Battery Life, Ports, Graphics)
+            const subfeatures = [
+                { label: 'Display', regex: /Display:(.*?)Processor:/s },
+                { label: 'Processor', regex: /Processor:(.*?)RAM:/s },
+                { label: 'RAM', regex: /RAM:(.*?)ROM:/s },
+                { label: 'ROM', regex: /ROM:(.*?)Battery Life:/s },
+                { label: 'Battery Life', regex: /Battery Life:(.*?)Ports:/s },
+                { label: 'Ports', regex: /Ports:(.*?)Graphics:/s },
+                { label: 'Graphics', regex: /Graphics:(.*?)Price:/s }
+            ];
+
+            subfeatures.forEach(subfeature => {
+                const match = review.match(subfeature.regex);
+                if (match) {
+                    table += `<tr>
+                                <td><strong>${subfeature.label}</strong></td>
+                                <td>${match[1].trim()}</td>
+                              </tr>`;
+                }
+            });
+
+            // Extracting eCommerce links (Amazon, Flipkart)
+            const ecommerceLinks = /(https:\/\/www\.(?:amazon|flipkart)\.com[^ ]+)/g;
+            const links = review.match(ecommerceLinks);
+            if (links) {
+                table += `<tr>
+                            <td><strong>eCommerce Links</strong></td>
+                            <td>${links.join('<br>')}</td>
+                          </tr>`;
+            }
+
+            table += `</tbody></table>`;
+            return table;
+        }
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
